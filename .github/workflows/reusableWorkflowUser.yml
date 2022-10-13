@@ -1,0 +1,40 @@
+name: Reusable Workflow User
+
+on:
+  workflow_dispatch:
+#   push:
+#     branches: [ "master" ]
+#   pull_request:
+#     branches: [ "master" ]
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run a one-line script
+      run: echo job1
+      
+  docker:
+    needs: job1
+    uses: Patrick1S/shardingsphere/.github/workflows/buildAndPublishDockerImage.yml@master
+    with:
+      image_name: my-awesome-app
+      tag: $GITHUB_RUN_NUMBER
+    secrets:
+      registery_username: ${{secrets.registery_username}}
+      registery_password: ${{secrets.registery_password}}
+      
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo job2
+      
+  job3:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo job3
+    

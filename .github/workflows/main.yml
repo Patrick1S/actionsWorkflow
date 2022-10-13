@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ master, dev ]
+    paths:
+      - '**/src/main/**'
+      - '**/src/test/**'
+      - '.github/workflows/checkstyle-and-license-check.yml'
+      - 'examples/shardingsphere-example-generator/**'
+      - '!examples/**'
+      - '!*.md'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - '**/src/main/**'
+      - '**/src/test/**'
+      - '.github/workflows/checkstyle-and-license-check.yml'
+      - 'examples/shardingsphere-example-generator/**'
+      - '!examples/**'
+      - '!*.md'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    #container:
+      #image: node:8
+    services:
+      nginx:
+        image: nginx
+        # Map port 8080 on the Docker host to port 80 on the nginx container
+        ports:
+          - 8080:80
+    steps:
+        - uses: actions/checkout@v1   
+        - run: |
+            node -v
+            curl localhost:8080
+            echo ${{ secrets.MY_SECRET_NAME }}
