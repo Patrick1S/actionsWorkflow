@@ -18,7 +18,7 @@ jobs:
       
   docker:
     needs: job1
-    uses: Patrick1S/actionsWorkflow/.github/workflows/buildAndPublishDockerImage.yml@master
+    uses: Patrick1S/shardingsphere/.github/workflows/buildAndPublishDockerImage.yml@master
     with:
       image_name: my-awesome-app
       tag: $GITHUB_RUN_NUMBER
