@@ -1,0 +1,55 @@
+name: npm Caching
+
+on:
+  push:
+    branches: [ master, dev ]
+    paths:
+      - '**/src/main/**'
+      - '**/src/test/**'
+      - '.github/workflows/checkstyle-and-license-check.yml'
+      - 'examples/shardingsphere-example-generator/**'
+      - '!examples/**'
+      - '!*.md'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - '**/src/main/**'
+      - '**/src/test/**'
+      - '.github/workflows/checkstyle-and-license-check.yml'
+      - 'examples/shardingsphere-example-generator/**'
+      - '!examples/**'
+      - '!*.md'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+          node-version: '10.x'
+
+    - name: Cache node modules
+      id: myCacheStep
+      uses: actions/cache@v3
+      env:
+        cache-name: Cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{hashFiles('**/package-lock.json')}}
+      
+
+    - name: Install Dependencies
+      if: steps.myCacheStep.outputs.cache-hit != 'true'
+      #run: /generate-primes.sh -d prime-numbers
+      run: npm install    
+
+    - name: Build
+      run: npm build
+      
+    #- name: Test
+    # run: npm test
+      
+      
+      
